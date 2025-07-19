@@ -4,7 +4,7 @@ import rocketLogo from '/rocket.png';
 import "./style.css";
 
 // Will eventually store the authenticated user's access_token
-let auth;
+let auth: any;
 
 const discordSdk = new DiscordSDK(import.meta.env.VITE_DISCORD_CLIENT_ID);
 
@@ -17,7 +17,7 @@ setupDiscordSdk().then(() => {
   // Note: the access_token returned is a sensitive secret and should be treated as such
 });
 
-async function setupDiscordSdk() {
+async function setupDiscordSdk(): Promise<void> {
   await discordSdk.ready();
   console.log("Discord SDK is ready");
 
@@ -47,7 +47,7 @@ async function setupDiscordSdk() {
       code,
     }),
   });
-  const { access_token } = await response.json();
+  const { access_token }: { access_token: string } = await response.json();
 
   // Authenticate with Discord client (using the access_token)
   auth = await discordSdk.commands.authenticate({
@@ -59,8 +59,9 @@ async function setupDiscordSdk() {
   }
 }
 
-async function appendVoiceChannelName() {
+async function appendVoiceChannelName(): Promise<void> {
   const app = document.querySelector('#app');
+  if (!app) return;
 
   let activityChannelName = 'Unknown';
 
@@ -81,11 +82,17 @@ async function appendVoiceChannelName() {
   app.appendChild(textTag);
 }
 
-async function appendGuildAvatar() {
+interface Guild {
+  id: string;
+  icon: string;
+}
+
+async function appendGuildAvatar(): Promise<void> {
   const app = document.querySelector('#app');
+  if (!app) return;
 
   // 1. From the HTTP API fetch a list of all of the user's guilds
-  const guilds = await fetch(`https://discord.com/api/v10/users/@me/guilds`, {
+  const guilds: Guild[] = await fetch(`https://discord.com/api/v10/users/@me/guilds`, {
     headers: {
       // NOTE: we're using the access_token provided by the "authenticate" command
       Authorization: `Bearer ${auth.access_token}`,
@@ -111,9 +118,9 @@ async function appendGuildAvatar() {
   }
 }
 
-document.querySelector('#app').innerHTML = `
+document.querySelector('#app')!.innerHTML = `
   <div>
     <img src="${rocketLogo}" class="logo" alt="Discord" />
     <h1>Hello, World!</h1>
   </div>
-`;
+`; 

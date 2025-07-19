@@ -2,10 +2,12 @@
   "name": "getting-starter-activity-server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "server.ts",
   "type": "module",
   "scripts": {
-    "dev": "npm start"
+    "dev": "tsx server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
@@ -14,5 +16,11 @@
     "dotenv": "^16.4.1",
     "express": "^4.18.2",
     "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.15",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   }
 }
